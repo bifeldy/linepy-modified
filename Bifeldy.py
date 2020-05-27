@@ -18,9 +18,9 @@ token = None
 try:
     print("-> Line Login!")
     try:
-        email = os.environ['LINE_EMAIL'];
-        passw = os.environ['LINE_PASSWORD'];
-        token = os.environ['LINE_TOKEN'];
+        email = os.environ.get('LINE_EMAIL', None)
+        passw = os.environ.get('LINE_PASSWORD', None)
+        token = os.environ.get('LINE_TOKEN', None)
     except Exception as e1:
         email = input("Email: ")
         passw = input("Password: ")
