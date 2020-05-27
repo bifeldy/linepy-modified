@@ -54,18 +54,18 @@ class Config(object):
         'DEFAULT': '10.0'
     }
 
-    APP_TYPE    = 'DESKTOPWIN'
-    APP_VER     = APP_VERSION[APP_TYPE] if APP_TYPE in APP_VERSION else APP_VERSION['DEFAULT']
-    CARRIER     = '51089, 1-0'
+    APP_TYPE = 'CHROMEOS'
+    APP_VER = APP_VERSION[APP_TYPE] if APP_TYPE in APP_VERSION else APP_VERSION['DEFAULT']
+    CARRIER = '51089, 1-0'
     SYSTEM_NAME = 'FDLRCN'
-    SYSTEM_VER  = SYSTEM_VERSION[APP_TYPE] if APP_TYPE in SYSTEM_VERSION else SYSTEM_VERSION['DEFAULT']
-    IP_ADDR     = '8.8.8.8'
+    SYSTEM_VER = SYSTEM_VERSION[APP_TYPE] if APP_TYPE in SYSTEM_VERSION else SYSTEM_VERSION['DEFAULT']
+    IP_ADDR = '8.8.8.8'
     EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
-    URL_REGEX   = re.compile(r'^(?:http|ftp)s?://' r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' r'localhost|' r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' r'(?::\d+)?' r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-    MID_REGEX   = re.compile(r'u\w{32}')
-    GID_REGEX   = re.compile(r'c\w{32}')
-    RID_REGEX   = re.compile(r'r\w{32}')
-    ALLIDS_REGEX= re.compile(r'(?:u\w{32}|c\w{32}|r\w{32})')
+    URL_REGEX = re.compile(r'^(?:http|ftp)s?://' r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' r'localhost|' r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' r'(?::\d+)?' r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    MID_REGEX = re.compile(r'u\w{32}')
+    GID_REGEX = re.compile(r'c\w{32}')
+    RID_REGEX = re.compile(r'r\w{32}')
+    ALLIDS_REGEX = re.compile(r'(?:u\w{32}|c\w{32}|r\w{32})')
 
     def __init__(self, appType=None):
         if appType:
