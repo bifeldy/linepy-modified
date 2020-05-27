@@ -2059,23 +2059,11 @@ oepoll.addOpInterruptWithDict({
 
 JumlahLoop = 0
 
-# Need Fake Server To Deploy On Heroku
-from flask import Flask
-app = Flask(__name__)
-app.run(host='0.0.0.0', port=os.environ.get('PORT', 8000))
-appStarted = False
-
-@app.route('/')
-def hello_world():
-    if appStarted == False:
-        appStarted = True
-        while True:
-            # Nunggu chat terus nentuin op
-            oepoll.trace()
-            JumlahLoop += 1
-            if JumlahLoop >= 10:
-                JumlahLoop = 0
-                with open('SilentReader.bin', 'wb') as pickle_out:
-                    pickle.dump(SilentReader, pickle_out, pickle.HIGHEST_PROTOCOL)
-    else:
-        return 'Go Here -> https://github.com/bifeldy/linepy-modified'
+while True:
+    # Nunggu chat terus nentuin op
+    oepoll.trace()
+    JumlahLoop += 1
+    if JumlahLoop >= 10:
+        JumlahLoop = 0
+        with open('SilentReader.bin', 'wb') as pickle_out:
+            pickle.dump(SilentReader, pickle_out, pickle.HIGHEST_PROTOCOL)

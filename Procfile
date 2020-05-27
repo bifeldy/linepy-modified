@@ -1,1 +1,1 @@
-web: python Bifeldy.py
+worker: python Bifeldy.py
