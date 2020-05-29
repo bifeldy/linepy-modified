@@ -307,7 +307,7 @@ line.log("-> All Done, Ready! Have a nice day~ >_<\"")
 # Attribut bisa saja Nama, Foto, Status, dll
 # https://github.com/cslinmiso/LINE-instant-messenger-protocol/blob/master/line-protocol.md
 # Dibawah ini merupakan trigger setelah melakukan sesuatu, bukanperintah untuk melakukan
-        
+
 # Kegiatan selesai # op.type=0
 def END_OF_OPERATION(op):
     return
@@ -323,7 +323,7 @@ def UPDATE_PROFILE(op):
 # op.param2 = Attribut yang di update
 def NOTIFIED_UPDATE_PROFILE(op):
     return
-    
+
 # Misteri, Kayanya orang yang baru bikin ID line # op.type=3
 def REGISTER_USERID(op):
     return
@@ -334,7 +334,7 @@ def REGISTER_USERID(op):
 # op.param2 = Misteri, keluarnya angka 0 terus, wkwkwkwk
 def ADD_CONTACT(op):
     return
-    
+
 # Ada yang nge-add kita # op.type=5
 # op.param1 = UserID Yang nge-add kita
 def NOTIFIED_ADD_CONTACT(op):
@@ -491,7 +491,7 @@ def NOTIFIED_LEAVE_GROUP(op):
     line.log("[NOTIFIED_LEAVE_GROUP] [%s] [%s]" % (ginfo.name, line.getContact(op.param2).displayName))
     try:
         if Settings["LeaveGroup_Msg"][str(op.param1)] == True:
-            line.sendMessage(op.param1, "Selamat tinggal~\n" + line.getContact(op.param2).displayName + "\nHmn~ (~_~メ)")
+            line.sendMessage(op.param1, "Selamat Tinggal~\n" + line.getContact(op.param2).displayName + "\nHmn~ (~_~メ)")
     except Exception as e:
         line.log("[NOTIFIED_LEAVE_GROUP] ERROR : " + str(e))
     return
@@ -551,7 +551,8 @@ def NOTIFIED_ACCEPT_GROUP_INVITATION(op):
             line.sendMessage(op.param2, "Silahkan menghubungi kontak admin / staff di atas.")
         else:
             if Settings["JoinGroup_Msg"][str(op.param1)] == True:
-                line.sendMessageWithMention(op.param1, "Selamat Datang~ [list] \nHave fun~ (^_^メ)", [op.param2])
+                joinMsg = ["Selamat Datang~ [list] \nHave fun~ (^_^メ)", "Hai~ [list] \nSalam Kenal~ (>_<)", "Welcome~ [list] \nHave A Nice Day~ (O.o\")"]
+                line.sendMessageWithMention(op.param1, random.choice(joinMsg), [op.param2])
     except Exception as e:
         line.log("[NOTIFIED_ACCEPT_GROUP_INVITATION] ERROR : " + str(e))
     return
