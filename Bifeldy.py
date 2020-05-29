@@ -12,23 +12,20 @@ LoginTime = datetime(2013, 8, 27, 1, 12, 23, 345678)
 
 email = None
 passw = None
-token = None
 
 # UserEmail & Password Line Buat Login
 try:
     print("-> Line Login!")
-    try:
-        email = os.environ.get('LINE_EMAIL', None)
-        passw = os.environ.get('LINE_PASSWORD', None)
-        token = os.environ.get('LINE_TOKEN', None)
-    except Exception as e1:
+    email = os.environ.get('LINE_EMAIL', None)
+    passw = os.environ.get('LINE_PASSWORD', None)
+    if (email == None and passw == None):
         email = input("Email: ")
         passw = input("Password: ")
     line = LINE(email, passw)
     # line = LINE(token)
     # line = LINE() # Login With QR-Code Link
-except Exception as e2:
-    print(e2)
+except Exception as e:
+    print(e)
     exit()
 
 line.log("-> Login success! Please wait~ >_<\"")
@@ -434,15 +431,12 @@ def NOTIFIED_INVITE_INTO_GROUP(op):
     line.log("[NOTIFIED_INVITE_INTO_GROUP] [%s] [%s->%s]" % (ginfo.name, line.getContact(op.param2).displayName, line.getContact(op.param3).displayName))
     try:
         if op.param3 == mid:
-            pass
-        else:
             if Settings["Auto_JoinGroup"] == True:
                 try:
-                    line.acceptGroupInvitation(op.param1) # Langsung join bro~
-                    return
+                    line.acceptGroupInvitation(op.param1)
                 except Exception as e:
                     print(e)
-                    pass
+        else:
             if op.param2 in Privilege['Staff'][str(op.param1)] or op.param2 in Privilege['Admin'][str(op.param1)] or op.param2 in Privilege['Creator']:
                 if op.param3 in Privilege['BlackList'][str(op.param1)]:
                     Privilege['BlackList'][str(op.param1)].remove(str(op.param3))
@@ -517,17 +511,18 @@ def ACCEPT_GROUP_INVITATION(op):
     Privilege['Staff'][str(op.param1)] = []
     Privilege['BlackList'][str(op.param1)] = []
     Settings["Auto_Read"][str(op.param1)] = True
-    Settings["Auto_ContactInfo"][str(op.param1)] = False
+    Settings["Auto_ContactInfo"][str(op.param1)] = True
     Settings["Auto_CancelInvite"][str(op.param1)] = False
     Settings["Auto_CancelURL"][str(op.param1)] = False
     Settings["Group_Protection"][str(op.param1)] = False
-    Settings["JoinGroup_Msg"][str(op.param1)] = False
+    Settings["JoinGroup_Msg"][str(op.param1)] = True
     Settings["LeaveGroup_Msg"][str(op.param1)] = False
+    Settings["Unsend_Msg"][str(op.param1)] = True
     with open('Privilege.bin', 'wb') as pickle_out:
         pickle.dump(Privilege, pickle_out, pickle.HIGHEST_PROTOCOL)
     with open('Settings.bin', 'wb') as pickle_out:
         pickle.dump(Settings, pickle_out, pickle.HIGHEST_PROTOCOL)
-    line.sendMessage(op.param1, "Hai Semua..\nSalam Kenal~\n(｡>﹏<｡)\"\n\nType !help for more info.") # Habis join, Sok-sok intro gitu
+    line.sendMessage(op.param1, "Hai Semua..\nSalam Kenal~\n(｡>﹏<｡)\"\n\nType !help for more info.")
     return
 
 # Ada orang lain join group juga (kita dalam group) # op.type=17
@@ -556,7 +551,7 @@ def NOTIFIED_ACCEPT_GROUP_INVITATION(op):
             line.sendMessage(op.param2, "Silahkan menghubungi kontak admin / staff di atas.")
         else:
             if Settings["JoinGroup_Msg"][str(op.param1)] == True:
-                line.sendMessage(op.param1, "Selamat Datang~\n" + line.getContact(op.param2).displayName + "\nHave fun~ (^_^メ)\n\nType !help for more info.")
+                line.sendMessageWithMention(op.param1, "Selamat Datang~ [list] \nHave fun~ (^_^メ)", [op.param2])
     except Exception as e:
         line.log("[NOTIFIED_ACCEPT_GROUP_INVITATION] ERROR : " + str(e))
     return
@@ -568,7 +563,7 @@ def KICKOUT_FROM_GROUP(op):
     ginfo = line.getGroup(op.param1)
     line.log("[KICKOUT_FROM_GROUP] [%s] [%s]" % (ginfo.name, line.getContact(op.param2).displayName))
     try:
-        line.sendMessage(op.param1, "Bye Bye~\n" + line.getContact(op.param2).displayName + "\nWkwk~ (>_<\")")
+        line.sendMessage(op.param1, "Bye Bye~\n" + line.getContact(op.param2).displayName + "\n(>_<\")")
     except Exception as e:
         line.log("[KICKOUT_FROM_GROUP] ERROR : " + str(e))
     return
@@ -686,7 +681,7 @@ def BOT_COMMANDS(op, ginfo):
                 statusSticker = ['15263','15264','15265','15266','15267','15268','15269','15270']
                 line.sendSticker(op.message.to, '966', random.choice(statusSticker))
             elif op.message.text.lower() == '!gift':
-                line.sendMessage(op.message.to, text="gift sent", contentMetadata=None, contentType=9)
+                line.sendMessage(op.message.to, '', None, 9)
             elif op.message.text.lower() == "!groupid":
                 line.sendMessage(op.message.to, "This GroupID :\n%s" % (op.message.to))
             elif op.message.text.lower() == "!botid":
@@ -710,7 +705,7 @@ def BOT_COMMANDS(op, ginfo):
                     except Exception as e:
                         print(e)
                         createdTime = "Error - Joined Since LINE BetA!"
-                    line.sendMessage(op.message.to,"[displayName]\n" + contacts.displayName + "\n\n[mID]\n" + mmid + "\n\n[createdTime]\n" + createdTime + "\n\n[statusMessage]\n" + contacts.statusMessage + "\n\n[pictureStatus]\nhttp://dl.profile.line-cdn.net/" + contacts.pictureStatus + "\n\n[coverURL]\n" + str(cu))
+                    line.sendMessageWithMention(op.message.to,"[displayName] [list] \n\n[mID]\n" + op.message.contentMetadata["mid"] + "\n\n[createdTime]\n" + createdTime + "\n\n[statusMessage]\n" + contacts.statusMessage + "\n\n[pictureStatus]\nhttp://dl.profile.line-cdn.net/" + contacts.pictureStatus + "\n\n[coverURL]\n" + str(cu), [mmid])
                 except Exception as e:
                     print(e)
                     line.sendMessage(op.message.to,"Contact not found.")
@@ -2011,7 +2006,7 @@ def NOTIFIED_DESTROY_MESSAGE(op):
     try:
         if Settings["Unsend_Msg"][str(ChatLog[op.param2]['group'])] == True:
             if ChatLog[op.param2]['contentType'] == 0:
-                line.sendMessage(ChatLog[op.param2]['group'],"[UNSEND_TEXT] [%s] %s" % (line.getContact(ChatLog[op.param2]['from']).displayName, ChatLog[op.param2]['text']))
+                line.sendMessageWithMention(ChatLog[op.param2]['group'],"[DESTROY_MSG] [list] %s" % (ChatLog[op.param2]['text']), [ChatLog[op.param2]['from']])
     except Exception as e:
         line.log("[NOTIFIED_DESTROY_MESSAGE] ERROR : " + str(e))
     return
